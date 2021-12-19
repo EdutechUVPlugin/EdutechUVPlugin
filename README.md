@@ -11,7 +11,7 @@ Once you installed the plugin. You must active on
 
 Preferences->site administration->Plugins->Repositories->![Manage Repositories](https://github.com/EdutechUVPlugin/EdutechUVPlugin/tree/main/pix/image2.jpg?raw=true)
 Search for Edutech repository and select from list the "Enable and Visible" option.
-Save your changes. For more details please refer to the Plugin Instalation Manual.
+Save your changes. For more details please refer to the [Plugin Instalation Manual](https://github.com/EdutechUVPlugin/EdutechUVPlugin/blob/main/manuals/Plugin%20Installation%20Manual.pdf).
 
 ## How to use
 
@@ -21,7 +21,7 @@ When you open the Edutech repository menu from filepicker you will see the Login
 
 ![Mainpage](https://github.com/EdutechUVPlugin/EdutechUVPlugin/tree/main/pix/image1.jpg?raw=true)
 
-In order to access the content, it is necessary to have create an EduTech account at the [Registration Page](https://repositorio.edutech-project.org/#/register). Once you have an account, you can log in from within the Moodle Plugin and select learning content available from the EduTech Repository. For more details on how to use and navigate the Plugin, please refer to the Plugin Training Manual.
+In order to access the content, it is necessary to have create an EduTech account at the [Registration Page](https://repositorio.edutech-project.org/#/register). Once you have an account, you can log in from within the Moodle Plugin and select learning content available from the EduTech Repository. For more details on how to use and navigate the Plugin, please refer to the [Plugin Training Manual](https://github.com/EdutechUVPlugin/EdutechUVPlugin/blob/main/manuals/Plugin%20Training%20Manual.pdf).
 
 ![Repository Files](https://github.com/EdutechUVPlugin/EdutechUVPlugin/tree/main/pix/image6.jpg?raw=true)
 
