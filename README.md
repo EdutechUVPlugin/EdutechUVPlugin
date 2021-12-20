@@ -2,7 +2,7 @@
 
 ## Overview
 
-This Moodle plugin known as the EduTech Repository Moodle Plugin enables you to upload new content for active courses in your platform for students from the [EduTech Repository](https://repositorio.edutech-project.org/). The EduTech Repository Plugin allows you to add focused or adapted courses for people with disabilities who participate within your Moodle courses as a Teacher on the Moodle platform. There are search filters availaboe within the Plugin to select the content you want.
+This Moodle plugin known as the EduTech Repository Moodle Plugin enables you to upload new content for active courses in your platform for students from the [EduTech Repository](https://repositorio.edutech-project.org/). The EduTech Repository Plugin allows you to add focused or adapted courses for people with disabilities who participate within your Moodle courses as a Teacher on the Moodle platform. There are search filters available within the Plugin to select the content you want.
 
 ## How to install the Plugin
 
