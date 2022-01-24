@@ -13,11 +13,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
-
 defined('MOODLE_INTERNAL') || die();
-
 require_once($CFG->dirroot . '/repository/lib.php');
-
 /**
  * EduTech repository plugin.
  * 
@@ -29,8 +26,7 @@ require_once($CFG->dirroot . '/repository/lib.php');
  * @author Francisco Sánchez Vásquez <fransanchez@uv.mx>
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class repository_edutech extends repository {
-
+class repository_edutech extends repository{
     /**
      * Create a new instance.
      *
@@ -40,70 +36,64 @@ class repository_edutech extends repository {
      * @throws \Exception
      * @return void
      */
-    public function __construct($repositoryid, $context = SYSCONTEXTID, $options = array()) {
+    public function __construct($repositoryid, $context = SYSCONTEXTID, $options = array()){
         global $SESSION;
         parent::__construct($repositoryid, $context, $options);
         $this->email = optional_param('edutech_email', '', PARAM_RAW);
         $this->password = optional_param('edutech_password', '', PARAM_RAW);
-        if (!empty($this->email) && !empty($this->password)) {
+        if (!empty($this->email) && !empty($this->password)){
             repository_edutech\edutech::authenticate($this->email, $this->password);
             $filters = repository_edutech\edutech::get_filters();
             $SESSION->edutech->available_filters = $filters;
         }
     }
-
     /**
      * Return the login form.
      *
      * @return void|array for ajax.
      */
-    public function print_login() {
-        if ($this->options['ajax']) {
-            $logo = '<a href="https://repositorio.edutech-project.org/#" target="_new">
-                    <img src="https://repositorio.edutech-project.org/assets/img/image2vector.svg" alt="Edutech" style="width:30%; margin-left: 50%;"></a><br>';
-            $userField = new stdClass();
-            $userField->label = $logo . get_string("email", "repository_edutech");
-            $userField->id    = "edutech_email";
-            $userField->type  = "text";
-            $userField->name  = "edutech_email";
-
-            $passwordField = new stdClass();
-            $passwordField->label = get_string("password", "repository_edutech");
-            $passwordField->id    = "edutech_password";
-            $passwordField->type  = "password";
-            $passwordField->name  = "edutech_password";
-
+    public function print_login(){
+        if ($this->options['ajax']){
+            $logo = '<a href="https://repositorio.edutech-project.org/#" target="_new"><img rc="https://repositorio.edutech-project.org/assets/img/image2vector.svg" alt="Edutech" style="width:30%;margin-left:50%;"></a><br>';
+            $userfield = new stdClass();
+            $userfield->label = $logo . get_string("email", "repository_edutech");
+            $userfield->id    = "edutech_email";
+            $userfield->type  = "text";
+            $userfield->name  = "edutech_email";
+            $passwordfield = new stdClass();
+            $passwordfield->label = get_string("password", "repository_edutech");
+            $passwordfield->id    = "edutech_password";
+            $passwordfield->type  = "password";
+            $passwordfield->name  = "edutech_password";
             return [
-                "login" => [$userField, $passwordField],
+                "login" => [$userfield, $passwordfield],
             ];
         } else { // Non-AJAX login form - directly output the form elements
             echo '<table>';
-            echo '<tr><td><label>' . get_string("email", "repository_edutech") . '</label></td>';
+            echo '<tr><td><label>' . get_string("email", "repository_edutech").'</label></td>';
             echo '<td><input type="text" name="edutech_email" /></td></tr>';
-            echo '<tr><td><label>' . get_string("password", "repository_edutech") . '</label></td>';
-            echo '<td><input type="password" name="edutech_password" /></td></tr>';
+            echo '<tr><td><label>'.get_string("password", "repository_edutech").'</label></td>';
+            echo '<td><input type="password" name="edutech_password"/></td></tr>';
             echo '</table>';
-            echo '<input type="submit" value="' . get_string("login", "repository_edutech") . '" />';
+            echo '<input type="submit" value="'.get_string("login", "repository_edutech").'" />';
         }
     }
-
     /**
      * Checks whether the user is authenticate or not.
      *
      * @return bool true when logged in.
      */
-    public function check_login() {
+    public function check_login(){
         return repository_edutech\edutech::is_authenticated();
     }
-
     /**
      * Return the filter form.
      *
      * @return string search form
      */
-    public function print_search() {
+    public function print_search(){
         global $SESSION;
-        if ($SESSION->edutech->language != current_language()) {
+        if ($SESSION->edutech->language != current_language()){
             $filters = repository_edutech\edutech::get_filters();
             $SESSION->edutech->available_filters = $filters;
         }
@@ -117,7 +107,7 @@ class repository_edutech extends repository {
         $html .= html_writer::start_div("", [
             "style" => "display:flex;flex-flow:wrap;"
         ]);
-        foreach ($filters as $filter) {
+        foreach ($filters as $filter){
             $html .= html_writer::start_div();
             $html .= html_writer::tag(
                 "label",
@@ -155,19 +145,18 @@ class repository_edutech extends repository {
         $html .= "</div>";
         return $html;
     }
-
     /**
      * Checks whether current request has filters or not.
      *
      * @return boolean true if there are filters
      */
-    public function is_filtering() {
+    public function is_filtering(){
         global $SESSION;
         if (!isset($SESSION->edutech->available_filters)) {
             return false;
         }
         $filters = [];
-        foreach ($SESSION->edutech->available_filters as $filter) {
+        foreach ($SESSION->edutech->available_filters as $filter){
             $filters[$filter["key"] . "__" . $filter["filter_param_value"]] = optional_param(
                 "select_" . $filter["key"] . "_filter",
                 "",
@@ -177,25 +166,24 @@ class repository_edutech extends repository {
         $SESSION->edutech->current_filters = $filters;
         return !empty(array_filter($filters, function ($x) { return $x !== ""; }));
     }
-
     /**
      * Search for content by filters.
      *
-     * @param string $search_text not used
+     * @param string $searchtext not used
      * @param string $page search page
      * @return array results
      */
-    public function search($search_text, $page = "") {
+    public function search($searchtext, $page = ""){
         global $SESSION;
         if ($this->is_filtering()) { // SUBMITTED SEARCH WITH FILTERS
-            $filters = \array_filter($SESSION->edutech->current_filters, function ($v, $k) {
+            $filters = \array_filter($SESSION->edutech->current_filters, function ($v, $k){
                 return !empty($v);
             }, ARRAY_FILTER_USE_BOTH);
             $this->filters = $filters;
-        } elseif ($page == "") { // SUBMITTED SEARCH WITH NO FILTERS
+        }else if ($page == ""){ // SUBMITTED SEARCH WITH NO FILTERS
             $this->filters = [];
-        } else { // NEXT PAGE WAS REQUESTED THEN
-            if (isset($SESSION->filters)) {
+        }else { // NEXT PAGE WAS REQUESTED THEN
+            if (isset($SESSION->filters)){
                 $this->filters = $SESSION->filters;
             }
         }
@@ -203,7 +191,6 @@ class repository_edutech extends repository {
         $SESSION->filters = $this->filters;
         return $this->search_content($this->filters, "", $page);
     }
-
     /**
      * Search content by filters.
      *
@@ -212,43 +199,40 @@ class repository_edutech extends repository {
      * @param string $page search page
      * @return array results
      */
-    public function search_content($filters = [], $path = "", $page = "1") {
+    public function search_content($filters = [], $path = "", $page = "1"){
         $list = [];
         $list['dynload'] = true;
         $list['issearchresult'] = count($filters) > 0;
-
         $tree = [];
-        if ($page == "") {
+        if ($page == ""){
             $page = "1";
         }
         $response = repository_edutech\edutech::get_learning_objects($page, $filters);
-        $learningObjects = $response["results"];
-        foreach ($learningObjects as $learningObject) {
-            $dateCreated = strtotime($learningObject["learning_object_file"]["created"]);
-            $dateModified = strtotime($learningObject["learning_object_file"]["modified"]);
+        $learningobjects = $response["results"];
+        foreach ($learningobjects as $learningobject){
+            $datecreated = strtotime($learningobject["learning_object_file"]["created"]);
+            $datemodified = strtotime($learningobject["learning_object_file"]["modified"]);
             $tree[] = [
-                "thumbnail" => $learningObject["avatar"],
+                "thumbnail" => $learningobject["avatar"],
                 "thumbnail_width" => 100,
                 "thumbnail_height" => 100,
-                "title" => $learningObject["learning_object_file"]["file_name"] . ".zip",
-                "shorttitle" => $learningObject["general_title"] . " - " . $learningObject["package_type"],
-                "url" => $learningObject["learning_object_file"]["file"],
-                "source" => $learningObject["learning_object_file"]["file"],
-                "author" => $learningObject["author"],
-                "license" => $learningObject["license"]["value"],
-                "datecreated" => $dateCreated,
-                "datemodified" => $dateModified,
-                "size" => $learningObject["learning_object_file"]["file_size"] * 1024, // Originally in KB, but we need it in bytes
+                "title" => $learningobject["learning_object_file"]["file_name"] . ".zip",
+                "shorttitle" => $learningobject["general_title"] . " - " . $learningobject["package_type"],
+                "url" => $learningobject["learning_object_file"]["file"],
+                "source" => $learningobject["learning_object_file"]["file"],
+                "author" => $learningobject["author"],
+                "license" => $learningobject["license"]["value"],
+                "datecreated" => $datecreated,
+                "datemodified" => $datemodified,
+                "size" => $learningobject["learning_object_file"]["file_size"] * 1024,
             ];
         }
         $list["page"] = (int) $page == "" ? 1 : $page;
         $list["pages"] = $response["pages"];
         $list["list"] = $tree;
         $list["filters"] = $this->filters;
-
         return $list;
     }
-
     /**
      * Get learning objects with no filters.
      *
@@ -256,19 +240,17 @@ class repository_edutech extends repository {
      * @param string $page search page
      * @return array results
      */
-    public function get_listing($path = '', $page = '1') {
+    public function get_listing($path = '', $page = '1'){
         return $this->search_content([], $path, $page);
     }
-
     /**
      * Return the allowed file types.
      *
      * @return array file types
      */
-    public function supported_filetypes() {
+    public function supported_filetypes(){
         return array("application/zip");
     }
-
     /**
      * Download file from repository.
      *
@@ -276,21 +258,20 @@ class repository_edutech extends repository {
      * @param string $filename
      * @return array
      */
-    public function get_file($url, $filename = '') {
+    public function get_file($url, $filename = ''){
         $path = $this->prepare_file($filename);
         $content = file_get_contents($url);
-        if (!file_put_contents($path, $content)) {
+        if (!file_put_contents($path, $content)){
             throw new moodle_exception('errorwhiledownload', 'repository', '');
         }
         return array('path' => $path, 'url' => $url);
     }
-
     /**
      * Log out from EduTech.
      *
      * @return void|array log in form
      */
-    public function logout() {
+    public function logout(){
         repository_edutech\edutech::logout();
         return $this->print_login();
     }
