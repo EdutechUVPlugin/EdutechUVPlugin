@@ -54,7 +54,7 @@ class repository_edutech extends repository{
      */
     public function print_login(){
         if ($this->options['ajax']){
-            $logo = '<a href="https://repositorio.edutech-project.org/#" target="_new"><img rc="https://repositorio.edutech-project.org/assets/img/image2vector.svg" alt="Edutech" style="width:30%;margin-left:50%;"></a><br>';
+            $logo = '<a href="https://repositorio.edutech-project.org/#" target="_new"><img src="https://repositorio.edutech-project.org/assets/img/image2vector.svg" alt="Edutech" style="width:30%;margin-left:50%;"></a><br>';
             $userfield = new stdClass();
             $userfield->label = $logo . get_string("email", "repository_edutech");
             $userfield->id    = "edutech_email";
