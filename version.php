@@ -13,7 +13,6 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
-
 /**
  * Version details
  * 
@@ -25,11 +24,7 @@
  * @author Francisco Sánchez Vásquez <fransanchez@uv.mx>
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
 defined('MOODLE_INTERNAL') || die();
-
 $plugin->version   = 2021100700; // The current plugin version (Date: YYYYMMDDXX).
 $plugin->requires  = 2021051100; // Requires this Moodle version.
 $plugin->component = 'repository_edutech'; // Full name of the plugin (used for diagnostics)
-$plugin->maturity = MATURITY_STABLE;
-$plugin->release = 'v1.0';
