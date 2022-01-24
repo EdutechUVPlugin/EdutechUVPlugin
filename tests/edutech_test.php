@@ -13,9 +13,7 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
-
 use repository_edutech\edutech;
-
 /**
  * Tests for the EduTech API.
  * 
@@ -27,28 +25,26 @@ use repository_edutech\edutech;
  * @author Francisco Sánchez Vásquez <fransanchez@uv.mx>
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class repository_edutech_edutech_testcase extends advanced_testcase {
-
+class edutech_test extends advanced_testcase{
     /**
      * Test to check a failed authentication.
      *
      * @return void
      */
-    public function test_failure_authenticate() {
+    public function test_failure_authenticate(){
         global $SESSION;
         $this->expectException(repository_exception::class);
-        $accessToken = edutech::authenticate("", "");
-        $this->assertNotEmpty($accessToken);
+        $accesstoken = edutech::authenticate("", "");
+        $this->assertNotEmpty($accesstoken);
         $this->assertFalse(edutech::is_authenticated());
         $this->assertFalse(isset($SESSION->edutech));
     }
-
     /**
      * Test to check that data is unset on log out.
      *
      * @return void
      */
-    public function test_logout() {
+    public function test_logout(){
         global $SESSION;
         $SESSION->edutech = (object) [
             "access_token" => "token",
