@@ -52,7 +52,7 @@ class requester{
      *
      * @var string
      */
-    public $requesttype;;
+    public $requesttype;
     /**
      * Request response.
      *
@@ -94,8 +94,8 @@ class requester{
      */
     public function post($requestcontent, $headers = []){
         $this->headers = $headers;
-        $this->request_type = "post";
-        $this->request_content = $requestcontent;
+        $this->requesttype = "post";
+        $this->requestcontent = $requestcontent;
         $this->_send();
         return json_decode($this->response, true);
     }
@@ -124,7 +124,7 @@ class requester{
             curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
             if ($this->requesttype == "post"){
                 curl_setopt($curl, CURLOPT_POST, true);
-                curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($this->request_content));
+                curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($this->requestcontent));
             }
             $result = curl_exec($curl);
             $code = curl_getinfo($curl, CURLINFO_RESPONSE_CODE);
