@@ -13,11 +13,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
-
 namespace repository_edutech;
-
 defined('MOODLE_INTERNAL') || die();
-
 /**
  * Helper class for making HTTP requests.
  * 
@@ -29,7 +26,7 @@ defined('MOODLE_INTERNAL') || die();
  * @author Francisco Sánchez Vásquez <fransanchez@uv.mx>
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class requester {
+class requester{
     
     /**
      * URL to where should be sent the request.
@@ -37,7 +34,6 @@ class requester {
      * @var string
      */
     public $url;
-
     /**
      * Request headers.
      * Format for each array value must be 'HEADER_NAME: VALUE'
@@ -45,79 +41,71 @@ class requester {
      * @var array
      */
     public $headers;
-
     /**
      * Request body content.
      *
      * @var array
      */
-    public $request_content;
-
+    public $requestcontent;
     /**
      * Request type. Available options: get, post.
      *
      * @var string
      */
-    public $request_type;
-
+    public $requesttype;;
     /**
      * Request response.
      *
      * @var string
      */
     public $response;
-
     /**
      * Request response code.
      *
      * @var integer
      */
-    public $response_code;
-
+    public $responsecode;
     /**
      * Create a new instance.
      *
      * @param string $url
      */
-    public function __construct($url) {
+    public function __construct($url){
         $this->url = $url;
     }
-
     /**
      * Make GET request.
      *
      * @param array $headers Format for each array value must be 'HEADER_NAME: VALUE'
      * @return array
      */
-    public function get($headers = []) {
+    public function get($headers = []){
         $this->headers = $headers;
-        $this->request_type = "get";
+        $this->requesttype = "get";
         $this->_send();
         return json_decode($this->response, true);
     }
-
     /**
      * Make POST request.
      *
-     * @param array $request_content
+     * @param array $requestcontent
      * @param array $headers Format for each array value must be 'HEADER_NAME: VALUE'
      * @return array
      */
-    public function post($request_content, $headers = []) {
+    public function post($requestcontent, $headers = []){
         $this->headers = $headers;
         $this->request_type = "post";
-        $this->request_content = $request_content;
+        $this->request_content = $requestcontent;
         $this->_send();
         return json_decode($this->response, true);
     }
-
     /**
      * Send request.
      *
      * @throws \repository_exception
      * @return void
      */
-    private function _send() {
+    private function _send(){
         try {
             $headers = [
                 "Content-type: application/json; charset=UTF-8",
@@ -134,7 +122,7 @@ class requester {
             curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 0);
             curl_setopt($curl, CURLOPT_TIMEOUT, 400);
             curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
-            if ($this->request_type == "post") {
+            if ($this->requesttype == "post"){
                 curl_setopt($curl, CURLOPT_POST, true);
                 curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($this->request_content));
             }
@@ -143,7 +131,7 @@ class requester {
             curl_close($curl);
             $this->response = $result;
             $this->response_code = $code;
-        } catch (\Exception $e) {
+        } catch (\Exception $e){
             throw new \repository_exception(get_string("unavailableapi", "repository_edutech"));
         }
     }

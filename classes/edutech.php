@@ -13,11 +13,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
-
 namespace repository_edutech;
-
 defined('MOODLE_INTERNAL') || die();
-
 /**
  * Helper class for handling communication with EduTech API.
  * 
@@ -29,15 +26,13 @@ defined('MOODLE_INTERNAL') || die();
  * @author Francisco Sánchez Vásquez <fransanchez@uv.mx>
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class edutech {
-    
-    private static $loginEndpoint = "https://repositorio.edutech-project.org/api/v1/login/";
-    private static $verifyTokenEndpoint = "https://repositorio.edutech-project.org/api/v1/token/verify/";
-    private static $refreshTokenEndpoint = "https://repositorio.edutech-project.org/api/v1/token/refresh/";
-    private static $learningObjectsEndpoint = "https://repositorio.edutech-project.org/api/v1/learning-objects/populars/";
-    private static $learningObjectsSearchEndpoint = "https://repositorio.edutech-project.org/api/v1/learning-objects/search/";
-    private static $filtersEndpoint = "https://repositorio.edutech-project.org/api/v1/endpoint-filter";
-    
+class edutech{
+    private static $loginendpoint = "https://repositorio.edutech-project.org/api/v1/login/";
+    private static $verifytokenendpoint = "https://repositorio.edutech-project.org/api/v1/token/verify/";
+    private static $refreshtokenendpoint = "https://repositorio.edutech-project.org/api/v1/token/refresh/";
+    private static $learningobjectsendpoint = "https://repositorio.edutech-project.org/api/v1/learning-objects/populars/";
+    private static $learningobjectssearchendpoint = "https://repositorio.edutech-project.org/api/v1/learning-objects/search/";
+    private static $filtersendpoint = "https://repositorio.edutech-project.org/api/v1/endpoint-filter";
     /**
      * Attempt to log in using email and password. Throws exception
      * in case of failure. Returns access token in case of success.
@@ -47,18 +42,18 @@ class edutech {
      * @throws \repository_exception
      * @return string
      */
-    public static function authenticate(string $email, string $password) {
-        global $SESSION;
-        $requester = new requester(self::$loginEndpoint);
+    public static function authenticate(string $email, string $password){
+    global $SESSION;
+        $requester = new requester(self::$loginendpoint);
         $response = $requester->post([
             "email" => $email,
             "password" => $password,
         ]);
-        if ($requester->response_code != 200) {
-            if ($requester->response_code == 401) {
+        if ($requester->response_code != 200){
+            if ($requester->response_code == 401){
                 throw new \repository_exception(get_string("incorrectdata", "repository_edutech"));
             }
-            if (isset($response["detail"])) {
+            if (isset($response["detail"])){
                 throw new \repository_exception($response["detail"]);
             }
             throw new \repository_exception(
@@ -71,39 +66,37 @@ class edutech {
         ];
         return $response["access"];
     }
-
     /**
      * Unset all info about the plugin from the current session.
      *
      * @return void
      */
-    public static function logout() {
+    public static function logout(){
         global $SESSION;
         unset($SESSION->edutech);
     }
-
     /**
      * Check if exists an access token in current session and if
      * it is not expired yet.
      *
      * @return boolean
      */
-    public static function is_authenticated() {
+    public static function is_authenticated(){
         global $SESSION;
-        if (isset($SESSION->edutech) && isset($SESSION->edutech->access_token)) {
-            $requester = new requester(self::$verifyTokenEndpoint);
+        if (isset($SESSION->edutech) && isset($SESSION->edutech->access_token)){
+            $requester = new requester(self::$verifytokenendpoint);
             $response = $requester->post([
                 "token" => $SESSION->edutech->access_token,
             ]);
-            if ($requester->response_code == 200) {
+            if ($requester->response_code == 200){
                 return true;
             }
-            $requester = new requester(self::$refreshTokenEndpoint);
+            $requester = new requester(self::$refreshtokenendpoint);
             $response = $requester->post([
                 "refresh" => $SESSION->edutech->refresh_token,
             ]);
-            if ($requester->response_code != 200) {
-                if (isset($response["detail"])) {
+            if ($requester->response_code != 200){
+                if (isset($response["detail"])){
                     self::logout();
                     throw new \repository_exception($response["detail"]);
                 }
@@ -115,7 +108,6 @@ class edutech {
         }
         return false;
     }
-
     /**
      * Get all learning objects by page and filters.
      *
@@ -124,71 +116,70 @@ class edutech {
      * @throws \repository_exception
      * @return array
      */
-    public static function get_learning_objects($page, $filters = []) {
+    public static function get_learning_objects($page, $filters = []){
         global $SESSION;
-        if (!self::is_authenticated()) {
+        if (!self::is_authenticated()){
             throw new \repository_exception(get_string("unauthenticated", "repository_edutech"));
         }
-        $url = self::$learningObjectsEndpoint;
-        $filtersQuery = http_build_query($filters);
-        if (strlen($filtersQuery) > 0) {
-            $filtersQuery = "&" . $filtersQuery;
-            $url = self::$learningObjectsSearchEndpoint;
+        $url = self::$learningobjectsendpoint;
+        $filtersquery = http_build_query($filters);
+        if (strlen($filtersquery) > 0){
+            $filtersquery = "&" . $filtersquery;
+            $url = self::$learningobjectssearchendpoint;
         }
-        $requester = new requester($url . "?page=$page" . $filtersQuery);
+        $requester = new requester($url . "?page=$page" . $filtersquery);
         $response = $requester->get([
             "Authorization: " . $SESSION->edutech->access_token,
             "Accept-Language: " . explode("_", current_language())[0]
         ]);
-        if ($requester->response_code != 200) {
-            if (isset($response["detail"])) {
+        if ($requester->response_code != 200){
+            if (isset($response["detail"])){
                 throw new \repository_exception($response["detail"]);
             }
             throw new \repository_exception(get_string("unavailableapi", "repository_edutech"));
         }
         return $response;
     }
-
     /**
      * Get all available filters.
      *
      * @throws \repository_exception
      * @return array
      */
-    public static function get_filters() {
+    public static function get_filters(){
         global $SESSION;
-        if (!self::is_authenticated()) {
+        if (!self::is_authenticated()){
             throw new \repository_exception(get_string("unauthenticated", "repository_edutech"));
         }
-        $requester = new requester(self::$filtersEndpoint);
-        $responseFilters = $requester->get([
+        $requester = new requester(self::$filtersendpoint);
+        $responsefilters = $requester->get([
             "Authorization: " . $SESSION->edutech->access_token,
             "Accept-Language: " . explode("_", current_language())[0]
         ]);
-        if ($requester->response_code != 200) {
-            if (isset($response["detail"])) {
+        if ($requester->response_code != 200){
+            if (isset($response["detail"])){
                 throw new \repository_exception($response["detail"]);
             }
             throw new \repository_exception(get_string("unavailableapi", "repository_edutech"));
         }
         $filters = [];
-        foreach ($responseFilters as $filter) {
+        foreach ($responsefilters as $filter){
             $endpoint = $filter["endpoint"];
-            if (substr($endpoint, -1) != "/") {
+            if (substr($endpoint, -1) != "/"){
                 $endpoint .= "/";
             }
-            $filterRequester = new requester($endpoint);
-            $filterData = $filterRequester->get([
+            $filterrequester = new requester($endpoint);
+            $filterdata = $filterrequester->get([
                 "Authorization: " . $SESSION->edutech->access_token,
                 "Accept-Language: " . explode("_", current_language())[0]
             ]);
-            if ($requester->response_code != 200) {
-                if (isset($response["detail"])) {
+            if ($requester->response_code != 200){
+                if (isset($response["detail"])){
                     throw new \repository_exception($response["detail"]);
                 }
                 throw new \repository_exception(get_string("unavailableapi", "repository_edutech"));
             }
-            $filters[] = $filterData;
+            $filters[] = $filterdata;
         }
         $SESSION->edutech->language = current_language();
         return $filters;
