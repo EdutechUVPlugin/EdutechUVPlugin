@@ -25,7 +25,6 @@
  * @author Francisco Sánchez Vásquez <fransanchez@uv.mx>
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
 $string['configplugin'] = 'Configure plugin';
 $string['email'] = 'E-mail';
 $string['filter'] = 'Filter';
