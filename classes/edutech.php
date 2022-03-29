@@ -116,7 +116,7 @@ class edutech{
      * @throws \repository_exception
      * @return array
      */
-    public static function get_learning_objects($page, $filters = []){
+    public static function get_learning_objects($page, $filters){
         global $SESSION;
         if (!self::is_authenticated()){
             throw new \repository_exception(get_string("unauthenticated", "repository_edutech"));
@@ -135,6 +135,8 @@ class edutech{
         if ($requester->response_code != 200){
             if (isset($response["detail"])){
                 throw new \repository_exception($response["detail"]);
+                $exception->getTraceAsString();
+                error_log($exception);
             }
             throw new \repository_exception(get_string("unavailableapi", "repository_edutech"));
         }
@@ -159,6 +161,8 @@ class edutech{
         if ($requester->response_code != 200){
             if (isset($response["detail"])){
                 throw new \repository_exception($response["detail"]);
+                $exception->getTraceAsString();
+                error_log($exception);
             }
             throw new \repository_exception(get_string("unavailableapi", "repository_edutech"));
         }

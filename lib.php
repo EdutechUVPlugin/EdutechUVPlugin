@@ -189,7 +189,7 @@ class repository_edutech extends repository{
         }
         // No matter what happened, we'll save the new filters data.
         $SESSION->filters = $this->filters;
-        return $this->search_content($this->filters, "", $page);
+        return $this->search_content($this->filters, $page, "");
     }
     /**
      * Search content by filters.
@@ -199,36 +199,46 @@ class repository_edutech extends repository{
      * @param string $page search page
      * @return array results
      */
-    public function search_content($filters = [], $path = "", $page = "1"){
-        $list = [];
-        $list['dynload'] = true;
-        $list['issearchresult'] = count($filters) > 0;
-        $tree = [];
-        if ($page == ""){
+    public function search_content($filters, $page, $path){
+        if(is_null($filters)){
+            $filters = [];
+        }
+        if(is_null($page) || $page == "" || $page == 0){
             $page = "1";
         }
+        $list = [];
+        $list['dynload'] = true;
+        //$list['issearchresult'] = count($filters) > 0;
+        $list['issearchresult'] = true;
+        $tree = [];
         $response = repository_edutech\edutech::get_learning_objects($page, $filters);
-        $learningobjects = $response["results"];
-        foreach ($learningobjects as $learningobject){
-            $datecreated = strtotime($learningobject["learning_object_file"]["created"]);
-            $datemodified = strtotime($learningobject["learning_object_file"]["modified"]);
-            $tree[] = [
-                "thumbnail" => $learningobject["avatar"],
-                "thumbnail_width" => 100,
-                "thumbnail_height" => 100,
-                "title" => $learningobject["learning_object_file"]["file_name"] . ".zip",
-                "shorttitle" => $learningobject["general_title"] . " - " . $learningobject["package_type"],
-                "url" => $learningobject["learning_object_file"]["file"],
-                "source" => $learningobject["learning_object_file"]["file"],
-                "author" => $learningobject["author"],
-                "license" => $learningobject["license"]["value"],
-                "datecreated" => $datecreated,
-                "datemodified" => $datemodified,
-                "size" => $learningobject["learning_object_file"]["file_size"] * 1024,
-            ];
+        if (isset($response["results"])){
+            $learningobjects = $response["results"];
+            if(is_array($learningobjects )){
+                foreach ($learningobjects as $learningobject){
+                    $datecreated = strtotime($learningobject["learning_object_file"]["created"]);
+                    $datemodified = strtotime($learningobject["learning_object_file"]["modified"]);
+                    $tree[] = [
+                        "thumbnail" => $learningobject["avatar"],
+                        "thumbnail_width" => 100,
+                        "thumbnail_height" => 100,
+                        "title" => $learningobject["learning_object_file"]["file_name"] . ".zip",
+                        "shorttitle" => $learningobject["general_title"] . " - " . $learningobject["package_type"],
+                        "url" => $learningobject["learning_object_file"]["file"],
+                        "source" => $learningobject["learning_object_file"]["file"],
+                        "author" => $learningobject["author"],
+                        "license" => $learningobject["license"]["value"],
+                        "datecreated" => $datecreated,
+                        "datemodified" => $datemodified,
+                        "size" => $learningobject["learning_object_file"]["file_size"] * 1024,
+                    ];
+                }
+            }
         }
         $list["page"] = (int) $page == "" ? 1 : $page;
-        $list["pages"] = $response["pages"];
+        if (isset($response["pages"])){
+            $list["pages"] = $response["pages"];
+        }
         $list["list"] = $tree;
         $list["filters"] = $this->filters;
         return $list;
@@ -240,8 +250,8 @@ class repository_edutech extends repository{
      * @param string $page search page
      * @return array results
      */
-    public function get_listing($path = '', $page = '1'){
-        return $this->search_content([], $path, $page);
+    public function get_listing($path = "", $page = "1"){
+        return $this->search_content([], $page, $path);
     }
     /**
      * Return the allowed file types.
@@ -258,7 +268,7 @@ class repository_edutech extends repository{
      * @param string $filename
      * @return array
      */
-    public function get_file($url, $filename = ''){
+    public function get_file($url, $filename = ""){
         $path = $this->prepare_file($filename);
         $content = file_get_contents($url);
         if (!file_put_contents($path, $content)){
