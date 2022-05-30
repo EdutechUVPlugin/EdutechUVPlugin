@@ -27,11 +27,17 @@ defined('MOODLE_INTERNAL') || die();
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class edutech{
+    /*Endpoint to API conection*/
     private static $loginendpoint = "https://repositorio.edutech-project.org/api/v1/login/";
+    /*Token validator on Edutech website*/
     private static $verifytokenendpoint = "https://repositorio.edutech-project.org/api/v1/token/verify/";
+    /*Token refresh Edutech website*/
     private static $refreshtokenendpoint = "https://repositorio.edutech-project.org/api/v1/token/refresh/";
+    /*GET learning objects from catalog*/
     private static $learningobjectsendpoint = "https://repositorio.edutech-project.org/api/v1/learning-objects/populars/";
+    /*SEARCH function for learning objects*/
     private static $learningobjectssearchendpoint = "https://repositorio.edutech-project.org/api/v1/learning-objects/search/";
+    /*FILTERS function for learning objects*/
     private static $filtersendpoint = "https://repositorio.edutech-project.org/api/v1/endpoint-filter";
     /**
      * Attempt to log in using email and password. Throws exception
